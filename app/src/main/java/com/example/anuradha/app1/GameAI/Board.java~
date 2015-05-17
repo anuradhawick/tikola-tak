@@ -1,0 +1,31 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Game;
+
+/**
+ *
+ * @author anuradha
+ */
+public class Board {
+
+    private char[][] gameBoard;
+
+    public Board() {
+        gameBoard = new char[][]{{'-', '-', '-'}, {'-', '-', '-'}, {'-', '-', '-'}};
+    }
+
+    public char[][] getBoard() {
+        return this.gameBoard;
+    }
+    
+    public boolean setCell(int i,int j,char c){
+        if(gameBoard[i][j]!='-'){
+            return false;
+        }
+        gameBoard[i][j] = c;
+        return true;
+    }
+}
