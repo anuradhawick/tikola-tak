@@ -30,13 +30,6 @@
             android:label="@string/title_activity_game_mode"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name=".GameSetupSinglePlayer"
-            android:label="@string/title_activity_game_setup_single_player"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait">
-
-        </activity>
     </application>
 
 </manifest>

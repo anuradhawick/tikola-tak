@@ -2,13 +2,8 @@ package com.example.anuradha.app1;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.Image;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 
@@ -34,7 +29,7 @@ public class GameMode extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.singleplayer:
-                Intent i = new Intent(this,GameSetupSinglePlayer.class);
+                Intent i = new Intent(this, Game.class);
                 startActivity(i);
                 break;
             case R.id.multiplayer:

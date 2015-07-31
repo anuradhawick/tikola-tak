@@ -3,7 +3,6 @@ package com.example.anuradha.app1.Effects;
 import android.app.Activity;
 import android.os.CountDownTimer;
 
-import com.example.anuradha.app1.Game;
 import com.example.anuradha.app1.GameAI.Board;
 
 /**
@@ -12,11 +11,12 @@ import com.example.anuradha.app1.GameAI.Board;
 public class WinnerBlinker extends Activity {
     private char winner;
     private Board gameBoard;
-    private Game game;
+    private UImanager uimanager;
     CountDownTimer blinkTimer;
-    public WinnerBlinker(Board gameBoard, Game game) {
+
+    public WinnerBlinker(Board gameBoard, UImanager uimanager) {
         this.gameBoard = gameBoard;
-        this.game = game;
+        this.uimanager = uimanager;
     }
 
 
@@ -27,18 +27,19 @@ public class WinnerBlinker extends Activity {
             @Override
             public void onTick(long millisUntilFinished) {
                 Winner winner = gameBoard.getWinner();
+
                 if (winner.isWinner()) {
                     char winnerChar = winner.getWinnerChar();
                     int[][] locations = winner.getLocations();
 
                     if (keeper.getTag() == 'A') {
                         for (int[] arr : locations) {
-                            game.updateUI(arr[0], arr[1], '-', false);
+                            uimanager.updateUI(arr[0], arr[1], '-', false);
                         }
                         keeper.setTag('B');
                     } else if (keeper.getTag() == 'B') {
                         for (int[] arr : locations) {
-                            game.updateUI(arr[0], arr[1], winnerChar, true);
+                            uimanager.updateUI(arr[0], arr[1], winnerChar, true);
                         }
                         keeper.setTag('A');
                     }
