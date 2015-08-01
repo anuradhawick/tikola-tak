@@ -1,22 +1,24 @@
 package com.example.anuradha.app1;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.example.anuradha.app1.Effects.UImanager;
-import com.example.anuradha.app1.Effects.WinnerBlinker;
 import com.example.anuradha.app1.GameAI.Board;
-import com.example.anuradha.app1.GameAI.ComputerPlayer;
+import com.example.anuradha.app1.GameModes.AbstractGameMode;
+import com.example.anuradha.app1.GameModes.HumanComputer;
 import com.example.anuradha.app1.GameModes.HumanHuman;
 
 
 public class Game extends Activity implements View.OnClickListener {
+    //initial game board
     private Board board;
-    private ComputerPlayer computerPlayer;
-    private HumanHuman human_vs_human_game;
+    //the abstract game event
+    private AbstractGameMode new_game;
 
     private ImageButton btn00;
     private ImageButton btn01;
@@ -30,21 +32,22 @@ public class Game extends Activity implements View.OnClickListener {
 
     private ImageView btnNewGame;
     private ImageView btnBack;
-    private boolean gameOver;
-
-    private WinnerBlinker blinker;
-
-    private boolean playFirst;
-    private char cpuChar;
-    private char playerChar;
-
     private UImanager uimanager;
+
+    public static int wins;
+    public static int losses;
+    public static int type;
+    public static String m_Text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gamewindow);
 
+
+        losses = 0;
+        wins = 0;
+        m_Text = "";
         /*
         Generating the game board at the beginig to start a new game
          */
@@ -79,78 +82,86 @@ public class Game extends Activity implements View.OnClickListener {
         btnBack.setOnClickListener(this);
 
         uimanager = new UImanager(this);
-//        Intent i = getIntent();
-//        Bundle b = i.getExtras();
-//        cpuChar = b.getChar("cpuChar");
-//        playFirst = b.getBoolean("play first");
-//        playerChar = (cpuChar == 'X') ? 'O' : 'X';
 
-
-//        computerPlayer = new ComputerPlayer(board, cpuChar);
-//        gameOver = false;
-//        if (!playFirst) {
-//            computerPlayer.play();
-//        }
-
-        human_vs_human_game = new HumanHuman(uimanager, board, this);
-        human_vs_human_game.updateAll();
+        /*
+        * Reading the bundled data and make the game instance
+        * */
+        Intent i = getIntent();
+        type = i.getExtras().getInt("type");
+        switch (type) {
+            case 1:
+                boolean firstPlay = i.getExtras().getBoolean("firstPlay");
+                char cpu = i.getExtras().getChar("cpu");
+                new_game = new HumanComputer(firstPlay, cpu, 1, uimanager, board, this);
+                break;
+            case 2:
+                new_game = new HumanHuman(uimanager, board, this);
+                break;
+            default:
+                boolean firstPlay1 = i.getExtras().getBoolean("firstPlay");
+                char cpu1 = i.getExtras().getChar("cpu");
+                new_game = new HumanComputer(firstPlay1, cpu1, 1, uimanager, board, this);
+                break;
+        }
+        new_game.updateAll();
     }
 
+
+
     /*
-    * ActionListener for Button clicks
-    **/
+        * ActionListener for Button clicks
+        **/
     @Override
     public void onClick(View v) {
         //ending the activity when user presses back button
         if (v.getId() == R.id.back) {
+
             this.finish();
             return;
         }
         //starting the game again when user ask for a new game
         else if (v.getId() == R.id.newGame) {
-            human_vs_human_game.startOver();
-//            computerPlayer = new ComputerPlayer(board, cpuChar);
-            //if the user wants to play first computer stays still
-//            if (!playFirst) {
-//                computerPlayer.play();
-//            }
-            //update the UI to start
-            //updateAll();
+            new_game.startOver();
             return;
         }
-        //if the game has already eneded do no change
-//        else if (gameOver) {
-//            return;
-//        }
+
         //responses to buttons
         switch (v.getId()) {
             case R.id.bt00:
-                human_vs_human_game.move(0, 0);
+                new_game.move(0, 0);
                 break;
             case R.id.bt01:
-                human_vs_human_game.move(0, 1);
+                new_game.move(0, 1);
                 break;
             case R.id.bt02:
-                human_vs_human_game.move(0, 2);
+                new_game.move(0, 2);
                 break;
             case R.id.bt10:
-                human_vs_human_game.move(1, 0);
+                new_game.move(1, 0);
                 break;
             case R.id.bt11:
-                human_vs_human_game.move(1, 1);
+                new_game.move(1, 1);
                 break;
             case R.id.bt12:
-                human_vs_human_game.move(1, 2);
+                new_game.move(1, 2);
                 break;
             case R.id.bt20:
-                human_vs_human_game.move(2, 0);
+                new_game.move(2, 0);
                 break;
             case R.id.bt21:
-                human_vs_human_game.move(2, 1);
+                new_game.move(2, 1);
                 break;
             case R.id.bt22:
-                human_vs_human_game.move(2, 2);
+                new_game.move(2, 2);
                 break;
         }
+    }
+
+    public void setWin() {
+        wins++;
+    }
+
+    public void setLoss() {
+        losses++;
     }
 }

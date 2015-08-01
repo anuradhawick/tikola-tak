@@ -35,6 +35,9 @@ public class MainMenu extends Activity implements View.OnClickListener {
                 startActivity(i);
                 break;
             case R.id.highscore:
+                Intent i2;
+                i2 = new Intent(this, ScoreCard.class);
+                startActivity(i2);
                 break;
             case R.id.close:
                 this.finish();

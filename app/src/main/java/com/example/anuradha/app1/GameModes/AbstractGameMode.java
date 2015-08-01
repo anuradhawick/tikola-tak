@@ -14,7 +14,7 @@ public abstract class AbstractGameMode {
     protected boolean gameOver;
     protected Board board;
     protected Activity runningActivity;
-    private WinnerBlinker blinker;
+    protected WinnerBlinker blinker;
 
     /*
     * Animates the winner's winning grid
@@ -28,10 +28,10 @@ public abstract class AbstractGameMode {
     * This starts a new game session
     * */
     public void startOver() {
+        gameOver = false;
         if (blinker != null)
             blinker.stopBlink();
         board = new Board();
-        gameOver = false;
         updateAll();
     }
 
@@ -46,4 +46,9 @@ public abstract class AbstractGameMode {
                 uimanager.updateUI(i, j, board.getBoard()[i][j], false);
             }
     }
+
+    /*
+    * This method should be overriden by all the GameMode sub classes
+    * */
+    public abstract void move(int x, int y);
 }

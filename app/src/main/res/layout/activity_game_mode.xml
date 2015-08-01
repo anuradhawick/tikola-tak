@@ -5,29 +5,63 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.anuradha.app1.GameMode"
-    android:background="@drawable/bkg">
+    android:background="@drawable/bkg"
+    android:id="@+id/bkg">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/singleplayer"
-        android:src="@drawable/singleplayer"
+        android:id="@+id/fwd"
+        android:src="@drawable/fwd"
+        android:layout_alignTop="@+id/back"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/network"
+        android:layout_marginTop="74dp"
+        android:src="@drawable/network"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignRight="@+id/fwd"
+        android:layout_alignEnd="@+id/fwd" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/people"
+        android:src="@drawable/humans"
+        android:layout_alignTop="@+id/network"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/solo"
+        android:src="@drawable/solo"
+        android:layout_alignTop="@+id/people"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/multiplayer"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/multiplayer"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/order"
+        android:src="@drawable/first"
+        android:layout_above="@+id/back"
+        android:layout_toLeftOf="@+id/people"
+        android:layout_toStartOf="@+id/people"
+        android:layout_marginBottom="63dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_symbol"
+        android:src="@drawable/user_x"
+        android:layout_alignTop="@+id/order"
+        android:layout_toRightOf="@+id/people"
+        android:layout_toEndOf="@+id/people" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -37,5 +71,15 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Single Player"
+        android:id="@+id/mode"
+        android:layout_above="@+id/people"
+        android:layout_centerHorizontal="true"
+        android:textSize="36dp" />
 
 </RelativeLayout>

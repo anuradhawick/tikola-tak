@@ -22,6 +22,7 @@ public class HumanHuman extends AbstractGameMode {
         runningActivity = act;
     }
 
+    @Override
     public void move(int x, int y) {
         //make the move intended
         if (gameOver) {

@@ -30,6 +30,9 @@
             android:label="@string/title_activity_game_mode"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".ScoreCard"
+            android:label="@string/title_activity_score_card"></activity>
     </application>
 
 </manifest>
