@@ -98,8 +98,7 @@ public class GameMode extends Activity implements View.OnClickListener {
                         startActivity(i);
                         break;
                     case 3:
-                        i = new Intent(this, Game.class);
-                        i.putExtra("type", 3);
+                        i = new Intent(this, BTDeviceSelect.class);
                         startActivity(i);
                         break;
                 }
@@ -131,7 +130,7 @@ public class GameMode extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Game.type == 1) {
+        if (Game.type == 1 && (Game.wins > 0 || Game.losses > 0)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Enter your name");
 
@@ -146,15 +145,28 @@ public class GameMode extends Activity implements View.OnClickListener {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Game.m_Text = input.getText().toString();
-                    System.out.println(Game.m_Text);
-                    stat = new UserStat(1, Game.m_Text, "Moderate", Game.wins, Game.losses);
+                    //    if(Game.m_Text!=null){
+
                     try {
                         dbh = new DatabaseHandler(getApplicationContext());
-                        dbh.addUserStat(stat);
+                        if (dbh.searchPlayer(Game.m_Text)) {
+
+                            dbh.updatewins(Game.m_Text, Game.wins);
+                            dbh.updatelosses(Game.m_Text, Game.losses);
+                        } else {
+
+                            stat = new UserStat(1, Game.m_Text, "Moderate", Game.wins, Game.losses);
+                            dbh.addUserStat(stat);
+                        }
+
                         System.out.println("Saved " + Game.wins + " " + Game.losses);
+                        Game.wins = 0;
+                        Game.losses = 0;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    //       }
+
                 }
             });
 

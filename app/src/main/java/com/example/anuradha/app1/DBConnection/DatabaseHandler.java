@@ -107,30 +107,52 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return recordList;
     }
 
-    //If it is a win you have to send 1 otherwise 0.this method is used to update user statistics
-    public boolean updateUserstat(String player, int win) {
-        int numwins = 0;
-        int numlosses = 0;
+    public boolean updatelosses(String player, int losses) {
         String selectQuery = "SELECT  * FROM " + TABLE_NAME
-                + " WHERE " + KEY_PLAYER + " = " + player;
+                + " WHERE " + KEY_PLAYER + " = '" + player + "'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
-            numwins = Integer.parseInt(cursor.getString(4)) + 1;
-            numlosses = Integer.parseInt(cursor.getString(5)) + 1;
+            int numlosses = Integer.parseInt(cursor.getString(5)) + losses;
+            String updatequery = "UPDATE " + TABLE_NAME + " SET " + KEY_LOSSES + "='" + numlosses + "' WHERE " + KEY_PLAYER + "='" + player + "'";
+            db.execSQL(updatequery);
+            db.close();
+            return true;
+        }
+        db.close();
+        return false;
+
+    }
+
+    public boolean updatewins(String player, int wins) {
+
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME
+                + " WHERE " + KEY_PLAYER + " = '" + player + "'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            int numwins = Integer.parseInt(cursor.getString(4)) + wins;
+            String updatequery = "UPDATE " + TABLE_NAME + " SET " + KEY_WINS + "='" + numwins + "' WHERE " + KEY_PLAYER + "='" + player + "'";
+            db.execSQL(updatequery);
+            db.close();
+            return true;
+        }
+        db.close();
+        return false;
+    }
+
+    public boolean searchPlayer(String player) {
+        String searchquery = "SELECT  * FROM " + TABLE_NAME
+                + " WHERE " + KEY_PLAYER + " = '" + player + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(searchquery, null);
+        if (cursor.moveToFirst()) {
+            return true;
         } else {
             return false;
         }
-        if (win == 1) {
-            String updatequery = "UPDATE " + TABLE_NAME + " SET " + KEY_WINS + "='" + numwins + "' WHERE " + KEY_PLAYER + "=" + player + "";
-            db.execSQL(updatequery);
-        } else {
-            String updatequery = "UPDATE " + TABLE_NAME + " SET " + KEY_WINS + "='" + numlosses + "' WHERE " + KEY_PLAYER + "=" + player + "";
-            db.execSQL(updatequery);
-        }
-        db.close();
-        return true;
     }
 
     public void deleteReocrd(int id) {
