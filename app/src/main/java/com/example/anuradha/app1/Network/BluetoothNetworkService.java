@@ -1,16 +1,15 @@
 package com.example.anuradha.app1.Network;
 
-/**
- * Created by anuradha on 8/2/15.
- */
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
+
+import com.example.anuradha.app1.Game;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +30,6 @@ public class BluetoothNetworkService {
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothChatSecure";
     private static final String NAME_INSECURE = "BluetoothChatInsecure";
-
     // Unique UUID for this application
     private static final UUID MY_UUID_SECURE =
             UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
@@ -55,6 +53,7 @@ public class BluetoothNetworkService {
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
+     *
      */
     public BluetoothNetworkService(Context context, Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -180,6 +179,7 @@ public class BluetoothNetworkService {
         mConnectedThread.start();
 
 
+
         setState(STATE_CONNECTED);
     }
 
@@ -254,7 +254,6 @@ public class BluetoothNetworkService {
                             NAME_INSECURE, MY_UUID_INSECURE);
                 }
             } catch (IOException e) {
-                Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
             }
             mmServerSocket = tmp;
         }
@@ -271,11 +270,9 @@ public class BluetoothNetworkService {
                 try {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
-
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
-                    Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed", e);
-                    break;
+                    //break;
                 }
 
                 // If a connection was accepted
@@ -313,6 +310,7 @@ public class BluetoothNetworkService {
                 Log.e(TAG, "Socket Type" + mSocketType + "close() of server failed", e);
             }
         }
+
     }
 
 
@@ -353,7 +351,6 @@ public class BluetoothNetworkService {
 
             // Always cancel discovery because it will slow down a connection
             mAdapter.cancelDiscovery();
-
 
             // Make a connection to the BluetoothSocket
             try {
@@ -432,10 +429,9 @@ public class BluetoothNetworkService {
                     mHandler.obtainMessage(0, bytes, -1, buffer)
                             .sendToTarget();
                 } catch (IOException e) {
-                    Log.e(TAG, "disconnected", e);
                     // Start the service over to restart listening mode
-                    BluetoothNetworkService.this.start();
-                    break;
+                    //BluetoothChatService.this.start();
+                    //break;
                 }
             }
         }
@@ -445,7 +441,7 @@ public class BluetoothNetworkService {
          *
          * @param buffer The bytes to write
          */
-        public void write(byte[] buffer) {
+        public synchronized void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
 
@@ -463,4 +459,3 @@ public class BluetoothNetworkService {
         }
     }
 }
-

@@ -23,7 +23,7 @@ public class HumanHuman extends AbstractGameMode {
     }
 
     @Override
-    public void move(int x, int y) {
+    public synchronized void move(int x, int y) {
         //make the move intended
         if (gameOver) {
             return;
@@ -58,5 +58,11 @@ public class HumanHuman extends AbstractGameMode {
             Toast.makeText(runningActivity, "Game was drawn!!", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    @Override
+    public synchronized void startOver() {
+        super.startOver();
+        turn = 0;
     }
 }

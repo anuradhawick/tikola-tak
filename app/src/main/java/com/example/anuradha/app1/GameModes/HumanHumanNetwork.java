@@ -10,8 +10,10 @@ import com.example.anuradha.app1.GameAI.Board;
  */
 public class HumanHumanNetwork extends HumanHuman {
 
+    public boolean play;
 
-    public HumanHumanNetwork(UImanager uimgr, Board bd, Activity act) {
+    public HumanHumanNetwork(UImanager uimgr, Board bd, Activity act, boolean play_first) {
         super(uimgr, bd, act);
+        this.play = play_first;
     }
 }

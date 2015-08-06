@@ -43,10 +43,11 @@ public class Game extends Activity implements View.OnClickListener {
     public static int losses;
     public static int type;
     public static String m_Text;
+    private int diff;
 
     private BluetoothDevice selected;
     private BluetoothNetworkService networkService;
-    private boolean netLock;
+    private boolean net_second_player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,6 @@ public class Game extends Activity implements View.OnClickListener {
         losses = 0;
         wins = 0;
         m_Text = "";
-        netLock = false;
         /*
         Generating the game board at the beginig to start a new game
          */
@@ -102,20 +102,24 @@ public class Game extends Activity implements View.OnClickListener {
             case 1:
                 boolean firstPlay = i.getExtras().getBoolean("firstPlay");
                 char cpu = i.getExtras().getChar("cpu");
-                new_game = new HumanComputer(firstPlay, cpu, 1, uimanager, board, this);
+                diff = i.getExtras().getInt("diff");
+                new_game = new HumanComputer(firstPlay, cpu, diff, uimanager, board, this);
                 break;
             case 2:
                 new_game = new HumanHuman(uimanager, board, this);
                 break;
             case 3:
-                new_game = new HumanHumanNetwork(uimanager, board, this);
+                new_game = new HumanHumanNetwork(uimanager, board, this, true);
+                net_second_player = false;
                 selected = (BluetoothDevice) getIntent().getExtras().get("btDevice");
                 networkService = new BluetoothNetworkService(getApplicationContext(), mHandler);
                 networkService.start();
                 networkService.connect(selected, true);
                 break;
             case 4:
-                new_game = new HumanHumanNetwork(uimanager, board, this);
+                //second player
+                net_second_player = true;
+                new_game = new HumanHumanNetwork(uimanager, board, this, false);
                 networkService = new BluetoothNetworkService(getApplicationContext(), mHandler);
                 networkService.start();
                 break;
@@ -143,55 +147,196 @@ public class Game extends Activity implements View.OnClickListener {
         //starting the game again when user ask for a new game
         else if (v.getId() == R.id.newGame) {
             new_game.startOver();
+            if (type == 3 || type == 4) {
+                if (net_second_player) {
+                    ((HumanHumanNetwork) new_game).play = false;
+                } else {
+                    ((HumanHumanNetwork) new_game).play = true;
+                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < 10; i++) {
+                            networkService.write("new".getBytes());
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }).start();
+            }
             return;
         }
-
+        if (type == 3 || type == 4)
+            if (!((HumanHumanNetwork) new_game).play)
+                return;
         //responses to buttons
         switch (v.getId()) {
             case R.id.bt00:
                 new_game.move(0, 0);
                 if (type == 3 || type == 4)
-                    networkService.write("00".getBytes());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((HumanHumanNetwork) new_game).play = false;
+                            for (int i = 0; i < 10; i++) {
+                                networkService.write("00".getBytes());
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }).start();
+
                 break;
             case R.id.bt01:
                 new_game.move(0, 1);
                 if (type == 3 || type == 4)
-                    networkService.write("01".getBytes());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((HumanHumanNetwork) new_game).play = false;
+                            for (int i = 0; i < 10; i++) {
+                                networkService.write("01".getBytes());
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }).start();
                 break;
             case R.id.bt02:
                 new_game.move(0, 2);
                 if (type == 3 || type == 4)
-                    networkService.write("02".getBytes());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((HumanHumanNetwork) new_game).play = false;
+                            for (int i = 0; i < 10; i++) {
+                                networkService.write("02".getBytes());
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                    }).start();
                 break;
             case R.id.bt10:
                 new_game.move(1, 0);
                 if (type == 3 || type == 4)
-                    networkService.write("10".getBytes());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((HumanHumanNetwork) new_game).play = false;
+                            for (int i = 0; i < 10; i++) {
+                                networkService.write("10".getBytes());
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }).start();
                 break;
             case R.id.bt11:
                 new_game.move(1, 1);
                 if (type == 3 || type == 4)
-                    networkService.write("11".getBytes());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((HumanHumanNetwork) new_game).play = false;
+                            for (int i = 0; i < 10; i++) {
+                                networkService.write("11".getBytes());
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }).start();
                 break;
             case R.id.bt12:
                 new_game.move(1, 2);
                 if (type == 3 || type == 4)
-                    networkService.write("12".getBytes());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((HumanHumanNetwork) new_game).play = false;
+                            for (int i = 0; i < 10; i++) {
+                                networkService.write("12".getBytes());
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }).start();
                 break;
             case R.id.bt20:
                 new_game.move(2, 0);
                 if (type == 3 || type == 4)
-                    networkService.write("20".getBytes());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((HumanHumanNetwork) new_game).play = false;
+                            for (int i = 0; i < 10; i++) {
+                                networkService.write("20".getBytes());
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }).start();
                 break;
             case R.id.bt21:
                 new_game.move(2, 1);
                 if (type == 3 || type == 4)
-                    networkService.write("21".getBytes());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((HumanHumanNetwork) new_game).play = false;
+                            for (int i = 0; i < 10; i++) {
+                                networkService.write("21".getBytes());
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }).start();
                 break;
             case R.id.bt22:
                 new_game.move(2, 2);
                 if (type == 3 || type == 4)
-                    networkService.write("22".getBytes());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((HumanHumanNetwork) new_game).play = false;
+                            for (int i = 0; i < 10; i++) {
+                                networkService.write("22".getBytes());
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }).start();
                 break;
         }
     }
@@ -214,11 +359,37 @@ public class Game extends Activity implements View.OnClickListener {
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //Use the message to play the game
                     System.out.println("Read " + readMessage);
-                    new_game.move(Integer.parseInt("" + readMessage.charAt(0)), Integer.parseInt("" + readMessage.charAt(1)));
+                    switch (readMessage.toString()) {
+                        case "new":
+                            new_game.startOver();
+                            if (net_second_player) {
+                                ((HumanHumanNetwork) new_game).play = false;
+                            } else {
+                                ((HumanHumanNetwork) new_game).play = true;
+                            }
+                            break;
+                        default:
+                            new_game.move(Integer.parseInt("" + readMessage.charAt(0)), Integer.parseInt("" + readMessage.charAt(1)));
+                            if (type == 3 || type == 4)
+                                ((HumanHumanNetwork) new_game).play = true;
+                            break;
+                    }
                     break;
 
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            networkService.stop();
+        } catch (Exception e) {
+            //No need to do anything
+        }
+
+    }
+
 
 }

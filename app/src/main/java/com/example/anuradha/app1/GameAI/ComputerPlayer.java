@@ -7,13 +7,15 @@ public class ComputerPlayer {
     private char userChar;
     private char currPlayer;
     private Board board;
+    int diffLevel;
 
-    public ComputerPlayer(Board gameBoard, char cpuChar) {
+    public ComputerPlayer(Board gameBoard, char cpuChar, int diffLevel) {
         this.gameBoard = gameBoard.getBoard();
         this.cpuChar = cpuChar;
         this.currPlayer = cpuChar;
         this.userChar = (cpuChar == 'X') ? 'O' : 'X';
         this.board = gameBoard;
+        this.diffLevel = diffLevel;
     }
 
     public boolean play() {
@@ -35,7 +37,7 @@ public class ComputerPlayer {
             return false;
         } else {
             DumbMove dm = new DumbMove(gameBoard, cpuChar);
-            dm.move();
+            dm.move(diffLevel);
             return false;
         }
     }

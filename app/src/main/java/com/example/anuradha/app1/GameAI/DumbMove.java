@@ -12,8 +12,14 @@ public class DumbMove {
         this.cpuChar = cpuChar;
     }
 
-    public boolean move() {
-        return this.defensiveMove();
+    public boolean move(int i) {
+        switch (i) {
+            case 1:
+                return this.defensiveMove();
+            case 2:
+                return this.blindmove();
+        }
+        return false;
     }
 
     public boolean defensiveMove() {
@@ -91,5 +97,17 @@ public class DumbMove {
         }
         return count;
         //return the number of neighbouring opponents
+    }
+
+    public boolean blindmove() {
+        for (int k = 0; k < gameBoard.length; k++) {
+            for (int l = 1; l < gameBoard.length; l++) {
+                if (gameBoard[k][l] == '-') {
+                    gameBoard[k][l] = cpuChar;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

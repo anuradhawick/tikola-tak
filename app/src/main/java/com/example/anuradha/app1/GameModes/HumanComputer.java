@@ -16,11 +16,9 @@ public class HumanComputer extends AbstractGameMode {
     private int difficulty;
     private boolean playFirst;
     private ComputerPlayer cpuplayer;
-    private boolean moved;
 
     public HumanComputer(boolean firstPlay, char cpuC, int diffLevel, UImanager uimgr, Board bd, Activity act) {
         //setting the initial conditions for the game
-        moved = false;
         board = new Board();
         gameOver = false;
         uimanager = uimgr;
@@ -29,7 +27,7 @@ public class HumanComputer extends AbstractGameMode {
         userChar = (cpuChar == 'X') ? 'O' : 'X';
         difficulty = diffLevel;
         playFirst = firstPlay;
-        cpuplayer = new ComputerPlayer(board, cpuChar);
+        cpuplayer = new ComputerPlayer(board, cpuChar, difficulty);
         if (!playFirst) {
             cpuplayer.play();
             updateAll();
@@ -73,10 +71,11 @@ public class HumanComputer extends AbstractGameMode {
 
     @Override
     public void startOver() {
+        gameOver = false;
         if (blinker != null)
             blinker.stopBlink();
         board = new Board();
-        cpuplayer = new ComputerPlayer(board, cpuChar);
+        cpuplayer = new ComputerPlayer(board, cpuChar, difficulty);
         if (!playFirst) {
             cpuplayer.play();
         }

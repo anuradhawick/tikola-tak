@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.example.anuradha.app1.DBConnection.DatabaseHandler;
 import com.example.anuradha.app1.DBConnection.UserStat;
@@ -28,6 +29,8 @@ public class GameMode extends Activity implements View.OnClickListener {
     private boolean one;
     private DatabaseHandler dbh;
     private UserStat stat;
+    private int diffLevel;
+    private ToggleButton diff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,7 @@ public class GameMode extends Activity implements View.OnClickListener {
 
         //initial game preferences
         x = true;
-        x = false;
+        diffLevel = 1;
 
         //linking UI
         solo = (ImageView) findViewById(R.id.solo);
@@ -47,6 +50,7 @@ public class GameMode extends Activity implements View.OnClickListener {
         proceed = (ImageView) findViewById(R.id.fwd);
         back = (ImageView) findViewById(R.id.back);
         mode = (TextView) findViewById(R.id.mode);
+        diff = (ToggleButton) findViewById(R.id.difflevel);
 
         //setting listeners
         back.setOnClickListener(this);
@@ -56,18 +60,27 @@ public class GameMode extends Activity implements View.OnClickListener {
         proceed.setOnClickListener(this);
         user.setOnClickListener(this);
         order.setOnClickListener(this);
+        Game.type = 1;
+        one = true;
+
+        diff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                diffLevel = (diffLevel == 1) ? 2 : 1;
+            }
+        });
     }
 
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.solo:
                 Game.type = 1;
                 mode.setText("Single Player");
                 user.setVisibility(View.VISIBLE);
                 order.setVisibility(View.VISIBLE);
+                diff.setVisibility(View.VISIBLE);
 
                 break;
             case R.id.people:
@@ -75,12 +88,14 @@ public class GameMode extends Activity implements View.OnClickListener {
                 mode.setText("Two Player");
                 user.setVisibility(View.INVISIBLE);
                 order.setVisibility(View.INVISIBLE);
+                diff.setVisibility(View.INVISIBLE);
                 break;
             case R.id.network:
                 Game.type = 3;
                 mode.setText("Network Play");
                 user.setVisibility(View.INVISIBLE);
                 order.setVisibility(View.INVISIBLE);
+                diff.setVisibility(View.INVISIBLE);
                 break;
             case R.id.fwd:
                 Intent i;
@@ -89,6 +104,7 @@ public class GameMode extends Activity implements View.OnClickListener {
                         i = new Intent(this, Game.class);
                         i.putExtra("type", 1);
                         i.putExtra("firstPlay", one);
+                        i.putExtra("diff", diffLevel);
                         i.putExtra("cpu", x ? 'O' : 'X');
                         startActivity(i);
                         break;
@@ -142,33 +158,33 @@ public class GameMode extends Activity implements View.OnClickListener {
 
             // Set up the buttons
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Game.m_Text = input.getText().toString();
-                    //    if(Game.m_Text!=null){
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Game.m_Text = input.getText().toString();
+                            if (!Game.m_Text.equals(null) || !Game.m_Text.equals("")) {
+                                try {
+                                    dbh = new DatabaseHandler(getApplicationContext());
+                                    if (dbh.searchPlayer(Game.m_Text)) {
 
-                    try {
-                        dbh = new DatabaseHandler(getApplicationContext());
-                        if (dbh.searchPlayer(Game.m_Text)) {
+                                        dbh.updatewins(Game.m_Text, Game.wins);
+                                        dbh.updatelosses(Game.m_Text, Game.losses);
+                                    } else {
 
-                            dbh.updatewins(Game.m_Text, Game.wins);
-                            dbh.updatelosses(Game.m_Text, Game.losses);
-                        } else {
+                                        stat = new UserStat(1, Game.m_Text, "Moderate", Game.wins, Game.losses);
+                                        dbh.addUserStat(stat);
+                                    }
 
-                            stat = new UserStat(1, Game.m_Text, "Moderate", Game.wins, Game.losses);
-                            dbh.addUserStat(stat);
+                                    System.out.println("Saved " + Game.wins + " " + Game.losses);
+                                    Game.wins = 0;
+                                    Game.losses = 0;
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
                         }
-
-                        System.out.println("Saved " + Game.wins + " " + Game.losses);
-                        Game.wins = 0;
-                        Game.losses = 0;
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                    //       }
-
-                }
-            });
+            );
 
             builder.show();
         }
